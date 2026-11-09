@@ -15,14 +15,6 @@ override.tf.json
 *_override.tf.json
 
 **/keypairs*/
-*.pem
-*.key
-*.p12
-*.pfx
-*.pgp
-*.gpg
-**/.pgp/
-**/.gnupg/
 **/.aws/
 .env
 .env.*

@@ -1,0 +1,90 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:InitiateLayerUpload",
+        "ecr:PutImage",
+        "ecr:UploadLayerPart"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:ecr:ap-south-1:000000000000:repository/devops-assignment-app",
+      "Sid": "EcrPushSingleRepository"
+    },
+    {
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "EcrAuthenticateRegistry"
+    },
+    {
+      "Action": [
+        "ecs:RegisterTaskDefinition"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:ecs:ap-south-1:000000000000:task-definition/devops-assignment-app:*",
+      "Sid": "EcsRegisterTaskDefinition"
+    },
+    {
+      "Action": [
+        "ecs:UpdateService"
+      ],
+      "Condition": {
+        "ArnEquals": {
+          "ecs:cluster": "arn:aws:ecs:ap-south-1:000000000000:cluster/devops-assignment"
+        },
+        "ArnLike": {
+          "ecs:task-definition": "arn:aws:ecs:ap-south-1:000000000000:task-definition/devops-assignment-app:*"
+        }
+      },
+      "Effect": "Allow",
+      "Resource": "arn:aws:ecs:ap-south-1:000000000000:service/devops-assignment/devops-assignment-app",
+      "Sid": "EcsUpdateSingleService"
+    },
+    {
+      "Action": [
+        "ecs:DescribeServices"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:ecs:ap-south-1:000000000000:service/devops-assignment/devops-assignment-app",
+      "Sid": "EcsDescribeDeploymentTarget"
+    },
+    {
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ecs-tasks.amazonaws.com"
+        }
+      },
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:iam::000000000000:role/devops-assignment-ecs-execution",
+        "arn:aws:iam::000000000000:role/devops-assignment-ecs-task"
+      ],
+      "Sid": "EcsPassTaskRoles"
+    },
+    {
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::devops-assignment-000000000000-ap-south-1-artifacts/*",
+      "Sid": "S3ReadArtifactsBucket"
+    },
+    {
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::devops-assignment-000000000000-ap-south-1-artifacts",
+      "Sid": "S3ListArtifactsBucket"
+    }
+  ]
+}
